@@ -13,14 +13,12 @@ def to_python_path(path):
 
 def compile_sb(
         code_path: str,
-        util_src_dir_path: str
+        util_name: str = 'util'
 ):
     src_dir = os.path.sep.join(code_path.split(os.path.sep)[:-1])
 
-    util_src_dir_python_path = to_python_path(util_src_dir_path)
-
-    util_path = os.path.join(src_dir, util_src_dir_path)
-    util_python_path = to_python_path(util_path)
+    util_path = os.path.join(src_dir, util_name + '.py')
+    util_python_path = src_dir.replace(os.path.sep, '.') + '.' + util_name
 
     with open(code_path, 'r') as f:
         code = re.search(
@@ -33,8 +31,8 @@ def compile_sb(
     util_imports = []
     import_util_module = False
     for line in code.group(1).split('\n'):
-        if util_src_dir_python_path in line and 'import' in line:
-            if f'import {util_src_dir_python_path}' in line:
+        if util_name in line and 'import' in line:
+            if f'import {util_name}' in line:
                 import_util_module = True
             else:
                 util_imports.append(line)
@@ -97,33 +95,8 @@ if __name__ == '__main__':
     with open('compiled.py', 'w') as f:
         f.write(code)
 
-# import util
-#
-# vui = vars(util).items()
-#
-# module_names = [name for name, v in vui if type(v) is ModuleType]
 
-# names = filter(
-#     lambda x: not (
-#             (type_v := type(x[1])) is ModuleType
-#             or (name := x[0]).startswith('__')
-#             or name.endswith('__')
-#             or print(repr_v := repr(x[1]))
-#             or any(mn in repr_v for mn in module_names)
-#     ),
-#     vui
-# )
-
-# for n in names:
-#     pass
-
-# for k, v in vui:
-#     type_v = type(v)
-#     print(type_v)
-#     print(str(type_v))
-
-
-compile_sb(r'src\mycode.py', r'utils\util.py')
+compile_sb(r'src\mycode.py')
 
 
 

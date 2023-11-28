@@ -15,10 +15,6 @@ max_min = [
 sb: BaseCase | None = None
 
 
-class MyB(BaseCase):
-    pass
-
-
 def rsleep(i, /):
     time.sleep(random.randint(*max_min[i]))
 

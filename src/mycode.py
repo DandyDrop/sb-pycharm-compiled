@@ -317,6 +317,7 @@ sb.wait_for_text_visible = new_wait_for_text_visible
 
 # prepare
 
+from util import cclick as cc
 
 # start
 
