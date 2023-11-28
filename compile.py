@@ -78,8 +78,6 @@ def compile_sb(
     with open(util_path, 'w') as f:
         f.write('\n'.join(util_code))
 
-    src_dir_python = src_dir.replace(os.path.sep, ".")
-
     imports_from_util = (
             f'\nfrom {util_python_path} import ' + ', '.join(dir_util_filtered)
     ) if list(dir_util_filtered) else ''
