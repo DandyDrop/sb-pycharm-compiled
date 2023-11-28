@@ -1,9 +1,9 @@
 import random
 import time
 
-from seleniumbase import SB
-from seleniumbase.fixtures.base_case import BaseCase
+from seleniumbase import BaseCase
 from seleniumbase.undetected.webelement import WebElement
+
 
 max_min = [
     (1, 3),
@@ -15,11 +15,8 @@ max_min = [
 sb: BaseCase | None = None
 
 
-def execute(code: str):
-    global sb
-
-    with SB(uc=True) as sb:
-        exec(code, locals(), globals())
+class MyB(BaseCase):
+    pass
 
 
 def rsleep(i, /):

@@ -1,5 +1,3 @@
-from util import cclick
-
 from seleniumbase.fixtures.base_case import BaseCase
 from seleniumbase.undetected import Chrome
 from seleniumbase.undetected.webelement import WebElement
@@ -317,11 +315,13 @@ sb.wait_for_text_visible = new_wait_for_text_visible
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+# prepare
+
 
 # start
 
 
-...
+sb.driver.get('')
 
 
 # end
