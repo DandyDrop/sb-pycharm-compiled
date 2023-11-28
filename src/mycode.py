@@ -321,7 +321,7 @@ sb.wait_for_text_visible = new_wait_for_text_visible
 # start
 
 
-sb.driver.get('')
+...
 
 
 # end

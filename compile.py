@@ -58,12 +58,12 @@ def compile_sb(
     while True:
         try:
             util = importlib.import_module(util_python_path)
-            dir_util_filtered = filter(
+            dir_util_filtered = list(filter(
                 lambda x:
                 not (x.startswith('__') and x.endswith('__'))
                 and any(x in util_import for util_import in util_imports),
                 dir(util)
-            )
+            ))
             break
         except Exception:
             del new_code[
@@ -80,7 +80,7 @@ def compile_sb(
 
     imports_from_util = (
             f'\nfrom {util_python_path} import ' + ', '.join(dir_util_filtered)
-    ) if list(dir_util_filtered) else ''
+    ) if dir_util_filtered else ''
 
     main_code = '\n'.join(' ' * 8 + line for line in code.group(2).split('\n'))
 
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 #     print(str(type_v))
 
 
-compile_sb(r'src\mycode.py', 'util.py')
+compile_sb(r'src\mycode.py', r'utils\util.py')
 
 
 
