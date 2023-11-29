@@ -1,14 +1,5 @@
 import os
-import io
 import re
-import importlib
-# from types import ModuleType
-
-import traceback
-
-
-def to_python_path(path):
-    return path[:-3].replace(os.path.sep, '.')
 
 
 def compile_sb(
@@ -17,7 +8,6 @@ def compile_sb(
 ):
     src_dir = os.path.sep.join(code_path.split(os.path.sep)[:-1])
 
-    util_path = os.path.join(src_dir, util_name + '.py')
     util_python_path = src_dir.replace(os.path.sep, '.') + '.' + util_name
 
     with open(code_path, 'r') as f:
@@ -27,70 +17,21 @@ def compile_sb(
             re.DOTALL
         )
 
-    prepare_code = io.StringIO()
-    util_imports = []
-    import_util_module = False
-    for line in code.group(1).split('\n'):
-        if util_name in line and 'import' in line:
-            if f'import {util_name}' in line:
-                import_util_module = True
-            else:
-                util_imports.append(line)
-        else:
-            prepare_code.write(line + '\n')
+    prepare_code = '\n'.join(
+        line.replace(util_name, util_python_path)
+        if 'import' in line and util_name in line else line
+        for line in code.group(1).split('\n')
+    )
 
-    with open(util_path) as f:
-        util_code = f.read().split('\n')
+    tab = ' ' * 8
+    main_code = '\n'.join(tab + line for line in code.group(2).split('\n'))
 
-    i = 0
-    for line in util_code:
-        if line and 'import' not in line:
-            break
-        i += 1
-
-    new_code = util_code[i:]
-
-    with open(util_path, 'w') as f:
-        f.write('\n'.join(new_code))
-
-    while True:
-        try:
-            util = importlib.import_module(util_python_path)
-            dir_util_filtered = list(filter(
-                lambda x:
-                not (x.startswith('__') and x.endswith('__'))
-                and any(x in util_import for util_import in util_imports),
-                dir(util)
-            ))
-            break
-        except Exception:
-            del new_code[
-                int(re.findall(
-                    util_path.replace('\\', r'\\') + r'", line (\w+)',
-                    traceback.format_exc()
-                )[0]) - 1
-            ]
-            with open(util_path, 'w') as f:
-                f.write('\n'.join(new_code))
-
-    with open(util_path, 'w') as f:
-        f.write('\n'.join(util_code))
-
-    imports_from_util = (
-            f'\nfrom {util_python_path} import ' + ', '.join(dir_util_filtered)
-    ) if dir_util_filtered else ''
-
-    main_code = '\n'.join(' ' * 8 + line for line in code.group(2).split('\n'))
-
-    code = f'''import seleniumbase{imports_from_util}
-{prepare_code.getvalue()}
+    code = f'''import seleniumbase
+{prepare_code}
 if __name__ == '__main__':
     with seleniumbase.SB(uc=True) as sb:
 {main_code}
     '''
-
-    if import_util_module:
-        code = f'import {util_python_path} as util\n' + code
 
     with open('compiled.py', 'w') as f:
         f.write(code)
