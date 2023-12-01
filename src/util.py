@@ -12,15 +12,13 @@ max_min = [
     (6, 10)
 ]
 
-sb: BaseCase | None = None
-
 
 def rsleep(i, /):
     time.sleep(random.randint(*max_min[i]))
 
 
-def cclick(*args, kwargs: dict = None, sleep: int = None, func=None):
-    e: WebElement = (func or sb.wait_for_element_visible)(*args, **(kwargs or {}))
+def cclick(self: BaseCase = None, args: tuple | list = None, kwargs: dict = None, sleep: int = None, func=None):
+    e: WebElement = (func or self.wait_for_element_visible)(*(args or tuple()), **(kwargs or {}))
 
     if sleep:
         rsleep(sleep)

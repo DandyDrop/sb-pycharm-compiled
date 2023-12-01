@@ -1,6 +1,20 @@
+import seleniumbase
 from seleniumbase.fixtures.base_case import BaseCase
 from seleniumbase.undetected import Chrome
 from seleniumbase.undetected.webelement import WebElement
+
+
+if __name__ == '__main__':
+    import sys
+    import subprocess
+
+    for c in [
+        r'python ..\compile.py',
+        # r'python ..\compiled.py'
+    ]:
+        subprocess.run(c.split(' '), capture_output=True)
+
+    sys.exit(0)
 
 
 sb = BaseCase()
@@ -316,6 +330,8 @@ sb.wait_for_text_visible = new_wait_for_text_visible
 # ----------------------------------------------------------------------------------------------------------------------
 
 # prepare
+
+with seleniumbase.SB(uc=True, wire=True, use_wire=True): ...
 
 
 # start
