@@ -28,7 +28,7 @@ def compile_sb(
             prepare_code.write(line.replace(util_name, util_python_path) + '\n')
         elif 'with seleniumbase.SB' in line:
             seleniumbase_init = line.split(':')[0]
-        else:
+        elif line:
             prepare_code.write(line + '\n')
 
     tab = ' ' * 8
